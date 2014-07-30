@@ -478,15 +478,15 @@ void line (double x0, double x1, double y0, double y1, double z0, double z1, int
 void arc (double coordinate_1_1, double coordinate_1_2, double coordinate_2_1, double coordinate_2_2, double center_h, double center_v, double speed, int step_prescalar, char plane_number, bool clockwise) // дуга окружности в одной из координатных четвертей
 {
     double radius = sqrt(((coordinate_1_1-center_h)*(coordinate_1_1-center_h))+((coordinate_1_2-center_v)*(coordinate_1_2-center_v))); // радиус дуги
-    double m = sqrt(((coordinate_1_1-coordinate_2_1)*(coordinate_1_1-coordinate_2_1))+((coordinate_1_2-coordinate_2_2)*(coordinate_1_2-coordinate_2_2))); // хорда дуги
+    //double m = sqrt(((coordinate_1_1-coordinate_2_1)*(coordinate_1_1-coordinate_2_1))+((coordinate_1_2-coordinate_2_2)*(coordinate_1_2-coordinate_2_2))); // хорда дуги
 
-    int acceleration = number_translate(speed*speed/radius); // центростремительное ускорение при текущей подаче
+    double acceleration = speed*speed/radius; // центростремительное ускорение при текущей подаче
 
     double distance_h=abs(coordinate_2_1-center_h);
     double distance_v=abs(coordinate_2_2-center_v);
 
-    double speed_h=speed*(distance_v/radius)/STEPS_IN_MILL; // проекция подачи на горизонтальную ось
-    double speed_v=speed*(distance_h/radius)/STEPS_IN_MILL; // проекция подачи на вертикальную ось
+    double speed_h=abs(speed*(distance_h/radius)/STEPS_IN_MILL); // проекция подачи на горизонтальную ось
+    double speed_v=abs(speed*(distance_v/radius)/STEPS_IN_MILL); // проекция подачи на вертикальную ось
 
     bool direction_h, direction_v; // направления вращения моторов
 
@@ -614,7 +614,15 @@ void arc (double coordinate_1_1, double coordinate_1_2, double coordinate_2_1, d
 
     prepare_motor(&mdata_h, steps_h, step_delay_h, direction_h, lable_h, step_prescalar); // начальная установка мотора
     prepare_motor(&mdata_v, steps_v, step_delay_v, direction_v, lable_v, step_prescalar); // начальная установка мотора
-
+    
+    //Serial.print(radius);
+    //Serial.print(" ");
+    //Serial.print(acceleration);
+    //Serial.print(" ");
+    Serial.print(step_delay_h);
+    Serial.print(" ");
+    Serial.print(step_delay_v);
+    Serial.print(" ");
     start_cycle();
 
     while(cycle_state==true) // цикл изменения задержки, для отрисовки контура (дуги окружности)
@@ -646,8 +654,12 @@ void arc (double coordinate_1_1, double coordinate_1_2, double coordinate_2_1, d
         }
         }
 
-        //time_counter+=timer_freq;
+        time_counter+=timer_freq;
 
-        //cycle_state = cycle_status();
+        cycle_state = cycle_status();
     }
+    
+    Serial.print(step_delay_h);
+    Serial.print(" ");
+    Serial.print(step_delay_v);
 }
