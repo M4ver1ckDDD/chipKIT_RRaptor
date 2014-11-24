@@ -42,7 +42,7 @@ void get_motor_data(motor_data_stb57*, char);
 
 void change_motor_data(char,int,int,int);
 
-void prepare_motor (motor_data_stb57*, int, int, bool, char, int);
+void prepare_motor (char, int, int, bool, int);
 
 void start_cycle();
 
@@ -52,20 +52,16 @@ void handle_pwm(int);
 
 bool cycle_status();
 
-char get_motor_label();
-
 int get_pulse_delay(char);
 
 void change_pulse_delay(char, int);
 
-int get_step_delay(char);
+int get_time_counter();
 
-void change_step_delay(char,int);
-
-int get_timer_counter();
+//void get_sensors_data (sensors_data*);
 
 void change_sensors_data(int, int, int, int, int, int);
 
 void line (double , double , double , double , double , double , int, int);
 
-void arc (double, double, double, double, double, double, double, int, char, bool);
+void arc (double, double, double, double, double, double, double, double, bool, char, int);

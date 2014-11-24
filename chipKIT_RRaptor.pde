@@ -6,7 +6,7 @@
 void setup()
 {
   Serial.begin(9600);
-  //pinMode(pin,OUTPUT);
+//pinMode(pin,OUTPUT);
 //prepare_motor(&data_x,1000,1000,true,'x',1);
 //start_cycle();
 
@@ -18,7 +18,7 @@ void setup()
 //G00(5,0,0);
 //delay(5000);
 //G00(0,0,0);
-arc (0,4.34,4.12,0,0,0,5.3,1,'1',true);
+//arc (0,4.34,4.12,0,0,0,5.6,1,'1',true);
 
 }
 
@@ -34,6 +34,8 @@ G00(0,0,0);
 delay(1000);*/
 
 //arc (0,5,5,0,0,0,1000000,1,'1',true);
+
+G00 (1000,0,0);
 }
 
 
