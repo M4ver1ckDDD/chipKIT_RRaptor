@@ -55,7 +55,18 @@ int steps_z=0;
 
 //#######################################
 
-double a_x, a_y, b_x, b_y;
+double a_x=0;
+double a_y=0;
+double a_z=0;
+double b_x=0;
+double b_y=0;
+double b_z=0;
+
+double speed_x, speed_y, speed_z;
+
+bool arc_state_xy=false;
+bool arc_state_zx=false;
+bool arc_state_yz=false;
 
 //#######################################
 
@@ -451,7 +462,7 @@ void start_cycle()
 {
     cycle_state=true;
     
-    initTimerISR(TIMER3,TIMER_PRESCALAR_1_8,0x64);
+    initTimerISR(TIMER3,TIMER_PRESCALAR_1_16,0x64);
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -479,6 +490,12 @@ void handle_pwm(int timer)
         }
         
         motor_step_timer_x=motor_step_timer_x-timer_freq;
+        
+        if (arc_state_xy == true || arc_state_zx == true)
+        {
+            speed_x=a_x+b_x*steps_x;
+            step_delay_x=number_translate(1000000/speed_x);
+        }
     }
     
     if(motor_step_counter_y > 0)
@@ -491,10 +508,16 @@ void handle_pwm(int timer)
             
             motor_step_timer_y=step_delay_y+timer_freq;
             motor_step_counter_y--;
-            steps_y++
+            steps_y++;
         }
         
         motor_step_timer_y=motor_step_timer_y-timer_freq;
+        
+        if (arc_state_xy == true || arc_state_yz == true)
+        {
+            speed_y=a_x+b_x*steps_y;
+            step_delay_y=number_translate(1000000/speed_y);
+        }
     }
     
     if(motor_step_counter_z > 0)
@@ -511,6 +534,12 @@ void handle_pwm(int timer)
         }
         
         motor_step_timer_z=motor_step_timer_z-timer_freq;
+        
+        if (arc_state_yz == true || arc_state_zx == true)
+        {
+            speed_z=a_x+b_x*steps_z;
+            step_delay_z=number_translate(1000000/speed_z);
+        }
     }
     
     if (motor_step_counter_x == 0 && motor_step_counter_y == 0 && motor_step_counter_z == 0)
@@ -532,6 +561,10 @@ void start_motor(char label, int steps, int mdelay, bool dir, int priority)
 
 void line (double x0, double x1, double y0, double y1, double z0, double z1, int time, int step_prescalar) // линейная интерполяция (перемещения на мм), за время time (мс) с постоянной скоростью;
 {
+    arc_state_xy=false;
+    arc_state_yz=false;
+    arc_state_zx=false;
+    
     pulse_delay_x=0;
     pulse_delay_y=0;
     pulse_delay_z=0;
@@ -600,15 +633,17 @@ void line (double x0, double x1, double y0, double y1, double z0, double z1, int
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c, double radius, double speed, bool clockwise, int prescalar) // дуга окружности в одной из четвертей
+void arc_xy (double x_0, double y_0, double x_1, double y_1, double x_c, double y_c, double radius, double speed, bool clockwise, int prescalar) // дуга окружности в одной из четвертей
 {
+    arc_state_xy=true;
+
     bool dir_x, dir_y;
     
     int k_x, k_y;
     
     if (clockwise == true)
     {
-        if (x0 >= x_c && y0 > y_c)
+        if (x_0 >= x_c && y_0 > y_c)
         {
             dir_x=false;
             dir_y=true;
@@ -617,7 +652,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
         }
         else{
             
-            if (x0 > x_c && y0 =< y_c)
+            if (x_0 > x_c && y_0 <= y_c)
             {
                 dir_x=true;
                 dir_y=true;
@@ -626,7 +661,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
             }
             else{
                 
-                if (x0 =< x_c && y0 < y_c)
+                if (x_0 <= x_c && y_0 < y_c)
                 {
                     dir_x=true;
                     dir_y=false;
@@ -635,7 +670,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
                 }
                 else{
                     
-                    if (x0 < x_c && y0 >= y_c)
+                    if (x_0 < x_c && y_0 >= y_c)
                     {
                         dir_x=false;
                         dir_y=false;
@@ -649,7 +684,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
     
     else
     {
-        if (x0 > x_c && y0 >= y_c)
+        if (x_0 > x_c && y_0 >= y_c)
         {
             dir_x=true;
             dir_y=false;
@@ -658,7 +693,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
         }
         else{
             
-            if (x0 >= x_c && y0 < y_c)
+            if (x_0 >= x_c && y_0 < y_c)
             {
                 dir_x=false;
                 dir_y=false;
@@ -668,7 +703,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
             
             else{
                 
-                if (x0 < x_c && y0 =< y_c)
+                if (x_0 < x_c && y_0 <= y_c)
                 {
                     dir_x=false;
                     dir_y=true;
@@ -677,7 +712,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
                 }
                 else{
                     
-                    if (x0 =< x_c && y0 > y_c)
+                    if (x_0 <= x_c && y_0 > y_c)
                     {
                         dir_x=true;
                         dir_y=false;
@@ -689,11 +724,11 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
         }
     }
     
-    int steps_x=abs(number_translate((x1-x0)*STEPS_IN_MILL));//кол-во шагов по горизонтали
-    int steps_y=abs(number_translate((y1-y0)*STEPS_IN_MILL));//кол-во шагов по вертикали
+    int steps_x=abs(number_translate((x_1-x_0)*STEPS_IN_MILL));//кол-во шагов по горизонтали
+    int steps_y=abs(number_translate((y_1-y_0)*STEPS_IN_MILL));//кол-во шагов по вертикали
     
-    double x0_steps=abs(x0-x_c)*STEPS_IN_MILL;
-    double y0_steps=abs(y0-y_c)*STEPS_IN_MILL;
+    double x0_steps=abs(x_0-x_c)*STEPS_IN_MILL;
+    double y0_steps=abs(y_0-y_c)*STEPS_IN_MILL;
     
     a_x=speed*x0_steps/radius;
     b_x=speed*k_x/radius;

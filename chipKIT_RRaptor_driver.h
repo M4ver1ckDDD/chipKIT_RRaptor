@@ -21,7 +21,7 @@ extern "C"{
 const int STEPS_IN_MILL=200;
 const float MILL_IN_STEP=0.005;
 const int MOTOR_MIN_DELAY=800;
-const int timer_freq=10;
+const int timer_freq=20;
 
 typedef struct motor_data_stb57
 {
