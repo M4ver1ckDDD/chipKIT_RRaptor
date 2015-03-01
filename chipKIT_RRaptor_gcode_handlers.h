@@ -1,12 +1,12 @@
 //
-//  gcode_handlers.h
+//  chipKIT_RRaptor_gcode_handlers.h
 //  
 //
 //  Created by Tomilov Andrey on 16.05.14.
 //
 //  RRaptor project team
 
-#include "chipKIT_RRaptor_drivers.h"
+#include "chipKIT_RRaptor_driver.h"
 #include "chipKIT_RRaptor_math.h"
 
 //#######################################
@@ -19,6 +19,7 @@ typedef struct coordinate_buffer
 }coordinate_buffer;
 
 void clear_coordinate_buffer();
+void print_coordinate_buffer();
 
 //#######################################
 

@@ -8,46 +8,30 @@
 
 #include "chipKIT_RRaptor_math.h"
 
-int number_translate(double number_float) // функция округления числа до ближайшего целого;
+int number_translate(double number_double) // функция округления числа до ближайшего целого;
 {
-    double number_fraction, number_int;// определяем переменные для целой и дробной части;
+  int number_int = round(number_double);
     
-    number_fraction=modf(number_float,&number_int); // отделяем целые и дробные части в определенные переменные;
+  number_int=(int)number_int; // переводим целую часть в int;
     
-    if (number_float>=0)
-    {
-        if (2*number_fraction>=1) // если исходное число положительно и дробная часть > 0.5, то увеличиваем целую часть на 1;
-        {
-            number_int++;
-        }
-    }
-    
-    else
-    {
-        if (2*number_fraction>=-1) // если исходное число отрицательно и дробная часть > 0.5, то уменьшаем целую часть на 1;
-        {
-            number_int--;
-        }
-    }
-    
-    number_int=(int)number_int; // переводим целую часть в int;
-    
-    return number_int;
+  return number_int;
 }
 //---------------------------------------------------------------------------------
 
 int max_distance(int steps_x, int steps_y, int steps_z)
 {
-    int distance_array[3]={steps_x,steps_y,steps_z};
+  int distance_array[3]={steps_x,steps_y,steps_z};
 
-    int max=0;
+  int max=0;
 
-    for (int i=0;i<=2;i++)
+  for (int i=0;i<=2;i++)
+  {
+    if (distance_array[i]>max)
     {
-        if (distance_array[i]>max)
-        {
-            max=distance_array[i];
-            return max;
-        }
+      max=distance_array[i];
+        
+      return max;
     }
+  }
 }
+
