@@ -1,3 +1,3 @@
 chipKIT_RRaptor
 ===============
-Firmware for chipKIT Uno32 or WF32, to control CNC or 3D-printer. 
+Прошивка для управления трехкоординатными системами, такими как фрезерно-гравировальные станки и 3d-принтеры.
