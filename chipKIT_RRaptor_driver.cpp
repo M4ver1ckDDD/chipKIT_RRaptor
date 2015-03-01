@@ -55,7 +55,7 @@ int steps_z=0;
 
 //#######################################
 
-
+double a_x, a_y, b_x, b_y;
 
 //#######################################
 
@@ -608,7 +608,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
     
     if (clockwise == true)
     {
-        if (x0 > x_c && y0 > y_c)
+        if (x0 >= x_c && y0 > y_c)
         {
             dir_x=false;
             dir_y=true;
@@ -617,7 +617,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
         }
         else{
             
-            if (x0 > x_c && y0 < y_c)
+            if (x0 > x_c && y0 =< y_c)
             {
                 dir_x=true;
                 dir_y=true;
@@ -626,7 +626,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
             }
             else{
                 
-                if (x0 < x_c && y0 < y_c)
+                if (x0 =< x_c && y0 < y_c)
                 {
                     dir_x=true;
                     dir_y=false;
@@ -635,7 +635,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
                 }
                 else{
                     
-                    if (x0 < x_c && y0 > y_c)
+                    if (x0 < x_c && y0 >= y_c)
                     {
                         dir_x=false;
                         dir_y=false;
@@ -649,7 +649,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
     
     else
     {
-        if (x0 > x_c && y0 > y_c)
+        if (x0 > x_c && y0 >= y_c)
         {
             dir_x=true;
             dir_y=false;
@@ -658,7 +658,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
         }
         else{
             
-            if (x0 > x_c && y0 < y_c)
+            if (x0 >= x_c && y0 < y_c)
             {
                 dir_x=false;
                 dir_y=false;
@@ -668,7 +668,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
             
             else{
                 
-                if (x0 < x_c && y0 < y_c)
+                if (x0 < x_c && y0 =< y_c)
                 {
                     dir_x=false;
                     dir_y=true;
@@ -677,7 +677,7 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
                 }
                 else{
                     
-                    if (x0 < x_c && y0 > y_c)
+                    if (x0 =< x_c && y0 > y_c)
                     {
                         dir_x=true;
                         dir_y=false;
@@ -692,25 +692,22 @@ void arc_xy (double x0, double y0, double x1, double y1, double x_c, double y_c,
     int steps_x=abs(number_translate((x1-x0)*STEPS_IN_MILL));//кол-во шагов по горизонтали
     int steps_y=abs(number_translate((y1-y0)*STEPS_IN_MILL));//кол-во шагов по вертикали
     
-    int x0_steps=number_translate(abs(x0-x_c)*STEPS_IN_MILL);
-    int y0_steps=number_translate(abs(y0-y_c)*STEPS_IN_MILL);
+    double x0_steps=abs(x0-x_c)*STEPS_IN_MILL;
+    double y0_steps=abs(y0-y_c)*STEPS_IN_MILL;
     
-    if (x0_steps == 0)
-    {
-        
-    }
+    a_x=speed*x0_steps/radius;
+    b_x=speed*k_x/radius;
     
+    a_y=speed*y0_steps/radius;
+    b_y=speed*k_y/radius;
     
-    if ()
-    {
-        
-    }
+    int start_delay_x=number_translate(1000000/a_x);
+    int start_delay_y=number_translate(1000000/a_y);
     
-    prepare_motor('x',steps_x,delay_x,dir_x,1);
-    prepare_motor('y',steps_y,delay_y,dir_y,1);
+    prepare_motor('x',steps_x,start_delay_x,dir_x,1);
+    prepare_motor('y',steps_y,start_delay_y,dir_y,1);
     
     start_cycle();
-    
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
